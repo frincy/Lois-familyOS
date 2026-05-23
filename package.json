@@ -1,0 +1,31 @@
+{
+  "name": "family-os",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A cognitive Chief of Staff for the household. Local-first, with three memory types, per-member family models, and methods that compound with use.",
+  "scripts": {
+    "setup": "node setup.mjs",
+    "start": "cd app && node server.mjs",
+    "dev": "cd app && node --watch server.mjs"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<user>/family-os"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "chief-of-staff",
+    "household",
+    "family",
+    "local-first",
+    "claude",
+    "anthropic",
+    "claude-agent-sdk"
+  ]
+}

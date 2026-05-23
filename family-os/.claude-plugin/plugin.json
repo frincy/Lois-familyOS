@@ -1,0 +1,16 @@
+{
+  "name": "family-os",
+  "displayName": "Family OS",
+  "description": "A cognitive Chief of Staff for the household. Three memory types (episodic / semantic / procedural), per-member family models, and methods that compound with use. Local-first by design.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "keywords": [
+    "family",
+    "personal",
+    "household",
+    "chief-of-staff",
+    "agent",
+    "claude",
+    "local-first"
+  ]
+}

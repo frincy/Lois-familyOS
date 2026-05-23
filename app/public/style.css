@@ -342,3 +342,17 @@ button.ghost { background: transparent; }
 
 ::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+
+/* privacy disclosure notes shown on COS surfaces that cross the network */
+.prop-privacy {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+.prop-privacy a { color: inherit; text-decoration: underline; }
+.prop-privacy a:hover { color: var(--accent); }
+

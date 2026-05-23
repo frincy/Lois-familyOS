@@ -25,7 +25,9 @@ A household is a complex operation with no operating system.
 
 Every "AI assistant" treats the user as a single entity. Family OS models the **household** — every member, their needs, the relationships, the cadences — and works as a real Chief of Staff for the person running it.
 
-It runs on **your device**, on **your data**, and uses **your Claude API key** (or your existing Claude Code session). No cloud, no telemetry, no SaaS — just markdown files in a folder you can open in VS Code or Obsidian whenever you want.
+It runs on **your device**, on **your data**, and uses **your Claude API key** (or your existing Claude Code session). No cloud database, no telemetry, no SaaS — just markdown files in a folder you can open in VS Code or Obsidian whenever you want.
+
+> **Be precise:** *storage* is local. *Inference* is the Anthropic API — so chat content, the files the COS reads on each turn, and (for triage) your email bodies do cross the network to Anthropic, who don't train on it or persist it long-term but do process it. Read **[docs/PRIVACY.md](docs/PRIVACY.md)** for the exact accounting. If you need fully local inference, that's a roadmap item — see below.
 
 ---
 
@@ -163,7 +165,11 @@ The summary, in one line:
 
 ---
 
-## Your data is yours
+## Your data is yours — what local-first actually means
+
+We'd rather you understand the trade-offs than oversell. The one-liner:
+
+> **Storage is local. Training is opt-out. Inference is remote.**
 
 Everything lives under `data/` as plain markdown:
 
@@ -188,10 +194,13 @@ data/
     └── vendor-selection.md
 ```
 
-- Open any file in VS Code or Obsidian. Edit anything. The COS reads it fresh next turn.
-- Sync the folder with OneDrive / iCloud / Dropbox / git for backup. Nothing is hidden in a database.
-- Anthropic sees your data only when a chat turn sends it — and only the slices needed for that turn. Nothing is persisted by them.
-- Microsoft Graph (optional) sees your inbox and calendar via OAuth. The token lives in `data/connections/microsoft.json` — `.gitignore`'d.
+- **Storage:** all of this is on your disk. Edit any file in VS Code or Obsidian; the COS reads it fresh next turn. Sync with OneDrive / iCloud / Dropbox / git for backup. Nothing is hidden in a database.
+- **Inference:** when you chat, click "Triage", or auto-fire the morning brief, Family OS sends data to Anthropic's API to run the model. Per Anthropic's commercial API ToS, your data is **not used for training** and is **not retained long-term** (~30 days for abuse monitoring, then deleted).
+- **What crosses the wire by surface:** chat turn → your message + relevant files. Triage → **full email bodies** (truncated). Brief → calendar events + loop titles + people summaries (no email content). Reflection → closed/open loop titles + tomorrow's calendar.
+- **Optional Outlook:** if you connect, Microsoft Graph sees your inbox and calendar via OAuth (`Mail.Read`, `Calendars.ReadWrite` — we never ask for `Mail.Send`). The refresh token lives in `data/connections/microsoft.json` — `.gitignore`'d. Disconnect any time.
+- **No third parties.** No analytics, no Sentry, no Mixpanel. The server's only outbound calls are to `api.anthropic.com` and (optionally) `graph.microsoft.com`. You can verify with `mitmproxy` or `grep -r "https://" app/`.
+
+**Read [docs/PRIVACY.md](docs/PRIVACY.md) for the full per-surface accounting, threat models we handle and don't, and how to audit any of it.**
 
 ---
 
@@ -231,6 +240,7 @@ What's next:
 - **More integrations** — Gmail, Apple Calendar, Things/Todoist for the principal who lives elsewhere
 - **Voice / ambient** — answer "what's on for today?" by speaking
 - **Playbook execution mode** — run a documented playbook against a fresh decision
+- **Fully local inference** — optional Ollama / LM Studio backend for users whose threat model requires zero data over the wire. Real work (the Agent SDK targets Anthropic's API), and open-weight models lose some judgment quality on decide-with-me, but it's the only honest path to "fully private." See [PRIVACY.md → Roadmap](docs/PRIVACY.md#roadmap--fully-local).
 
 What we will *not* add:
 

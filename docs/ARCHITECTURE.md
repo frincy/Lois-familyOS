@@ -20,9 +20,11 @@ This document covers:
 
 Three principles, all enforced architecturally — not by policy or marketing.
 
-### 1.1. Local-first
+### 1.1. Local-first (storage)
 
 Your data is plain markdown in `./data/`. Open it in VS Code, edit it, version it with git, sync it with OneDrive. Nothing is encrypted-by-us, hidden in a database, or shipped to a server we control.
+
+**An honest scope note up front:** "local-first" here applies to *storage* and *training* — your data lives on disk, and Anthropic doesn't train on it. It does **not** apply to *inference*. The COS calls `api.anthropic.com` on every chat turn and during triage/brief/reflection, and the relevant slice of your data goes with that call. Triage in particular sends full email bodies. Anthropic's commercial ToS forbids training on it and limits retention (~30 days for abuse monitoring), but the request itself crosses the network. For the exact per-surface accounting and how to audit it, see **[docs/PRIVACY.md](PRIVACY.md)**. Fully local inference (Ollama / LM Studio) is a real roadmap item; we'd rather call this out clearly than overpromise.
 
 We deliberately avoided:
 

@@ -208,7 +208,7 @@ function renderReflection(r) {
   $("reflection-body").innerHTML = `<div class="cos-md">${renderMarkdown(r.markdown)}</div><div class="brief-time">reflected ${esc(when)}</div>`;
 }
 async function runReflect() {
-  $("reflection-body").innerHTML = `<div class="prop-empty">Looking back on your day…</div>`;
+  $("reflection-body").innerHTML = `<div class="prop-empty">Looking back on your day… <span class="prop-privacy">(closed + open loop titles + tomorrow's calendar are sent to Anthropic)</span></div>`;
   try {
     const r = await (await fetch("/api/reflect", { method: "POST" })).json();
     if (r.error) { $("reflection-body").innerHTML = `<div class="prop-empty">${esc(r.error)}</div>`; return; }
@@ -245,7 +245,7 @@ function renderBrief(b) {
   $("brief-body").innerHTML = `${stale}<div class="cos-md">${renderMarkdown(b.markdown)}</div><div class="brief-time">generated ${esc(when)}</div>`;
 }
 async function runBrief() {
-  $("brief-body").innerHTML = `<div class="prop-empty">Putting your brief together…</div>`;
+  $("brief-body").innerHTML = `<div class="prop-empty">Putting your brief together… <span class="prop-privacy">(calendar + loop titles + people summaries are sent to Anthropic; not your emails)</span></div>`;
   try {
     const b = await (await fetch("/api/brief/regenerate", { method: "POST" })).json();
     if (b.error) { $("brief-body").innerHTML = `<div class="prop-empty">${esc(b.error)}</div>`; return; }
@@ -271,7 +271,7 @@ async function loadProposalsCached() {
 }
 async function runTriage() {
   const body = $("proposals-body");
-  body.innerHTML = `<div class="prop-empty">Reading today's inbox… (a few seconds)</div>`;
+  body.innerHTML = `<div class="prop-empty">Reading today's inbox and sending it to Anthropic for triage… (a few seconds)<br><span class="prop-privacy">Email bodies cross the network during this step — see docs/PRIVACY.md.</span></div>`;
   let d;
   try { d = await (await fetch("/api/triage", { method: "POST" })).json(); }
   catch (e) { body.innerHTML = `<div class="prop-empty">Error: ${esc(String(e))}</div>`; return; }

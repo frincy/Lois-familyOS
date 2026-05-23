@@ -1,6 +1,6 @@
 <div align="center">
 
-# Family OS
+# Lois - Your Family OS
 
 **A cognitive Chief of Staff for the household.**
 

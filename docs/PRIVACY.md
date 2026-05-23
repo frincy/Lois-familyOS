@@ -227,4 +227,4 @@ Tracking this as a roadmap item. If it's a hard requirement for you, please open
 | Audit-able | Yes | mitmproxy + grep the code |
 | Fully local inference | Not yet | Roadmap |
 
-If any of this is wrong or has drifted from the code, please [open an issue](https://github.com/frincy/family-os/issues) — accurate privacy framing matters more than the marketing.
+If any of this is wrong or has drifted from the code, please [open an issue](https://github.com/frincy/Lois-familyOS/issues) — accurate privacy framing matters more than the marketing.

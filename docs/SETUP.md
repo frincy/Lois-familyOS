@@ -13,8 +13,8 @@ If `npm run setup` from the root just worked for you, you don't need this page. 
 
 ```bash
 # 1. clone
-git clone https://github.com/<your-user>/family-os.git
-cd family-os
+git clone https://github.com/frincy/Lois-familyOS.git
+cd Lois-familyOS
 
 # 2. install
 cd app

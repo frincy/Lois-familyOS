@@ -84,8 +84,8 @@ Generated from your calendar + open loops + family models + the unread inbox cou
 ## Quick start
 
 ```bash
-git clone https://github.com/<your-user>/family-os.git
-cd family-os
+git clone https://github.com/frincy/Lois-familyOS.git
+cd Lois-familyOS
 npm run setup          # one command: asks two questions, scaffolds data/, writes app/.env
 npm start              # open http://localhost:4317
 ```

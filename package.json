@@ -1,9 +1,9 @@
 {
-  "name": "family-os",
+  "name": "lois-familyos",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "A cognitive Chief of Staff for the household. Local-first, with three memory types, per-member family models, and methods that compound with use.",
+  "description": "Lois — a cognitive Chief of Staff for the household. Local-first, with three memory types, per-member family models, and methods that compound with use.",
   "scripts": {
     "setup": "node setup.mjs",
     "start": "cd app && node server.mjs",
@@ -15,7 +15,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/<user>/family-os"
+    "url": "https://github.com/frincy/Lois-familyOS"
+  },
+  "homepage": "https://github.com/frincy/Lois-familyOS",
+  "bugs": {
+    "url": "https://github.com/frincy/Lois-familyOS/issues"
   },
   "keywords": [
     "ai",

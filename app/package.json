@@ -1,9 +1,9 @@
 {
-  "name": "family-os-app",
+  "name": "lois-familyos-app",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Local web app for Family OS — a cognitive Chief of Staff for the household",
+  "description": "Local web app for Lois — a cognitive Chief of Staff for the household",
   "scripts": {
     "start": "node server.mjs"
   },

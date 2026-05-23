@@ -4,7 +4,7 @@
 
 **A cognitive Chief of Staff for the household.**
 
-Memory + Models + Methods · Local-first · Learns you over time
+Memory + Models + Decisions · Local-first · Learns you over time
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-14B8A6.svg)](https://opensource.org/licenses/MIT)
 [![Node](https://img.shields.io/badge/node-%E2%89%A518.17-14B8A6)](https://nodejs.org)
@@ -159,7 +159,7 @@ For the full picture, see **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — w
 
 The summary, in one line:
 
-> **Privacy as architecture. Family models that grow. Methods that compound.**
+> **Privacy as architecture. Family models that grow. Decisions that compound.**
 
 ---
 

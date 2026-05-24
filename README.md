@@ -15,6 +15,22 @@ Memory + Models + Decisions · Local-first · Learns you over time
 
 ---
 
+<div align="center">
+
+### 10 seconds — one day with your Chief of Staff
+
+<a href="docs/media/lois-10s.mp4">
+  <img src="docs/media/lois-10s.gif" alt="Lois — 10 seconds showing the proactive morning brief, midday inbox triage, and evening reflection" width="900" />
+</a>
+
+<sub>**morning brief** writes itself before you wake · **midday triage** filters 34 emails to 4 decisions · **evening reflection** closes the loop and sets up tomorrow</sub>
+
+<sub>*click the GIF for the full MP4 (1.7 MB · 1920×1080)*</sub>
+
+</div>
+
+---
+
 ## Why this exists
 
 A household is a complex operation with no operating system.

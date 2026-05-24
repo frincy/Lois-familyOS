@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lois — UX explorations</title>
+<style>
+  /* tokens (mirror app/public/style.css) */
+  :root {
+    --bg:        #0B0F14;
+    --bg-2:      #0F1620;
+    --panel:     #141A22;
+    --panel-2:   #1A2230;
+    --line:      #243140;
+    --text:      #F5F7FA;
+    --muted:     #8B93A7;
+    --faded:     #5A6577;
+    --accent:    #14B8A6;
+    --accent-d:  #0D9488;
+    --accent-soft:#0F3A37;
+    --warn:      #F59E0B;
+    --warn-soft: #3a2a0e;
+    --crit:      #EF4444;
+    --crit-soft: #3a1a1a;
+    --mono:      Consolas, "SF Mono", Menlo, monospace;
+    --body:      Calibri, -apple-system, "Segoe UI", sans-serif;
+    --head:      Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: var(--body); font-size: 15px;
+    line-height: 1.55;
+  }
+  a { color: var(--accent); }
+  code, pre, .mono { font-family: var(--mono); }
+
+  .page {
+    max-width: 1480px; margin: 0 auto; padding: 48px 32px 96px;
+  }
+  header.hero {
+    margin-bottom: 56px;
+  }
+  .eyebrow {
+    font-family: var(--mono); color: var(--accent);
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  h1.h {
+    font-family: var(--head); font-weight: 700; font-size: 44px;
+    margin: 0 0 12px; letter-spacing: -1px;
+  }
+  .sub {
+    color: var(--muted); font-size: 18px; max-width: 780px;
+    margin: 0 0 18px;
+  }
+  .meta {
+    font-size: 13px; color: var(--muted);
+  }
+  .rule { height: 1px; background: var(--line); margin: 24px 0; }
+
+  /* grid of four directions */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  /* a single direction */
+  .dir {
+    background: linear-gradient(180deg, var(--bg-2), var(--bg));
+    border: 1px solid var(--line); border-radius: 16px;
+    padding: 28px 28px 32px; position: relative; overflow: hidden;
+  }
+  .dir::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent 70%);
+  }
+  .dir h2 {
+    font-family: var(--head); font-size: 26px; margin: 6px 0 4px;
+    letter-spacing: -0.5px;
+  }
+  .dir .tag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 3px;
+    color: var(--accent); text-transform: uppercase;
+  }
+  .dir .thesis {
+    font-style: italic; color: var(--muted); margin: 12px 0 22px;
+    border-left: 2px solid var(--accent); padding-left: 14px;
+  }
+
+  /* the mockup frame */
+  .mock {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px; margin: 18px 0 22px;
+    min-height: 320px;
+  }
+  .mock-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 14px;
+  }
+  .mock-bar .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    display: inline-block; margin-right: 8px; box-shadow: 0 0 8px var(--accent);
+  }
+  .lead-card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 22px; position: relative;
+  }
+  .lead-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent); border-radius: 12px 12px 0 0;
+  }
+
+  .pips {
+    display: flex; justify-content: center; gap: 6px;
+    margin: 16px 0 8px;
+  }
+  .pips span {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--line);
+  }
+  .pips .here { background: var(--accent); transform: scale(1.6); }
+  .pips .done { background: var(--accent); opacity: 0.45; }
+  .peek {
+    font-size: 12px; color: var(--muted); text-align: center;
+    border-top: 1px dashed var(--line); padding-top: 10px; margin-top: 6px;
+  }
+
+  /* Direction A — Briefing-First */
+  .lead-eyebrow {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .lead-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .lead-body { font-size: 14px; color: var(--text); margin-bottom: 16px; }
+  .act-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .act {
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; font-family: var(--mono);
+    cursor: pointer;
+  }
+  .act.primary { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .act:hover { background: var(--panel); border-color: var(--accent); }
+
+  /* Direction B — Conversation-Centric */
+  .b-split { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .b-split { grid-template-columns: 1fr; } }
+  .chat-col {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: 14px; min-height: 280px;
+    display: flex; flex-direction: column;
+  }
+  .chat-col .you, .chat-col .cos {
+    margin-bottom: 12px; font-size: 13px; line-height: 1.5;
+  }
+  .chat-col .you {
+    color: var(--text); border-left: 2px solid var(--muted); padding-left: 10px;
+  }
+  .chat-col .cos {
+    color: var(--text); background: var(--panel-2); padding: 10px 12px;
+    border-radius: 8px; border-left: 2px solid var(--accent);
+  }
+  .chat-input {
+    margin-top: auto; padding: 8px 10px; background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 6px;
+    color: var(--faded); font-size: 12px;
+  }
+  .ctx-col {
+    background: var(--panel); border: 1px solid var(--accent-soft);
+    border-radius: 10px; padding: 14px; min-height: 280px;
+  }
+  .ctx-col h4 {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 2px;
+    color: var(--accent); text-transform: uppercase; margin: 0 0 4px;
+  }
+  .ctx-name {
+    font-size: 16px; font-weight: 700; margin-bottom: 2px;
+  }
+  .ctx-cadence {
+    font-size: 11px; color: var(--muted); margin-bottom: 12px;
+  }
+  .ctx-section {
+    margin: 12px 0; padding-top: 10px; border-top: 1px solid var(--line);
+  }
+  .ctx-label {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;
+  }
+  .ctx-item { font-size: 12px; margin: 4px 0; }
+  .ctx-item::before { content: "· "; color: var(--accent); }
+
+  /* Direction C — Day Strip */
+  .strip {
+    position: relative; padding: 20px 0 14px;
+  }
+  .strip-rule {
+    height: 2px; background: var(--line); position: relative;
+    margin: 30px 0;
+  }
+  .strip-now {
+    position: absolute; left: 50%; top: -12px; bottom: -12px;
+    width: 2px; background: var(--accent); transform: translateX(-50%);
+    box-shadow: 0 0 14px var(--accent);
+  }
+  .strip-now::before {
+    content: "NOW"; position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 2px;
+  }
+  .strip-events {
+    display: grid; grid-template-columns: repeat(8, 1fr); position: relative;
+  }
+  .strip-event {
+    text-align: center; font-size: 11px;
+  }
+  .strip-event .time { font-family: var(--mono); color: var(--muted); font-size: 10px; }
+  .strip-event .dot {
+    width: 14px; height: 14px; border-radius: 50%; background: var(--panel-2);
+    border: 2px solid var(--line); margin: 4px auto; position: relative; z-index: 2;
+  }
+  .strip-event.past .dot { background: var(--accent); border-color: var(--accent); opacity: 0.5; }
+  .strip-event.now .dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .strip-event .label { color: var(--text); }
+  .strip-event.past .label { color: var(--muted); }
+  .insert {
+    background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 10px;
+    padding: 14px; margin: 22px auto 0; max-width: 340px;
+    position: relative;
+  }
+  .insert::before {
+    content: "✦ Lois inserts"; display: block; font-family: var(--mono);
+    font-size: 10px; color: var(--accent); letter-spacing: 2px; margin-bottom: 8px;
+  }
+  .insert-text { font-size: 13px; margin-bottom: 12px; }
+  .top-bar-c {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 11px;
+    padding: 8px 0; border-bottom: 1px solid var(--line); margin-bottom: 16px;
+  }
+  .pill {
+    background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 2px 10px; color: var(--muted);
+  }
+  .pill.warn { color: var(--warn); border-color: var(--warn); }
+
+  /* Direction D — Family Graph */
+  .graph {
+    position: relative; height: 280px; margin: 10px 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .you-node {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: var(--panel); border: 2px solid var(--text);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--head); font-weight: 700; font-size: 14px;
+    letter-spacing: 3px; z-index: 3; position: relative;
+  }
+  .person-node {
+    position: absolute; width: 130px; padding: 10px; border-radius: 10px;
+    background: var(--panel); border: 1px solid var(--line);
+    text-align: center; font-size: 12px;
+  }
+  .pn-name { font-weight: 700; margin-bottom: 2px; }
+  .pn-status { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-family: var(--mono); }
+  .pn-need { font-size: 11px; color: var(--text); }
+  .pn-need::before { content: "· "; color: var(--accent); }
+  .person-node.overdue {
+    border-color: var(--warn); background: var(--warn-soft);
+    animation: pulseWarn 2.5s ease-in-out infinite;
+  }
+  .person-node.overdue .pn-status { color: var(--warn); }
+  .person-node.current { border-color: var(--accent); }
+  .person-node.current .pn-status { color: var(--accent); }
+  @keyframes pulseWarn {
+    0%, 100% { box-shadow: 0 0 0 0 var(--warn); }
+    50% { box-shadow: 0 0 0 6px transparent; }
+  }
+  .n-tl { top: 4px; left: 8px; }
+  .n-tr { top: 4px; right: 8px; }
+  .n-bl { bottom: 4px; left: 8px; }
+  .n-br { bottom: 4px; right: 8px; }
+  .graph-edges {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  }
+  .top-bar-d {
+    background: var(--panel-2); border-radius: 8px; padding: 10px 14px;
+    font-size: 12px; color: var(--muted); margin-bottom: 14px;
+  }
+  .top-bar-d strong { color: var(--accent); }
+  .bottom-bar-d {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--muted); padding-top: 12px;
+    border-top: 1px solid var(--line); margin-top: 14px;
+    font-family: var(--mono);
+  }
+
+  /* card content */
+  .dir-points {
+    margin-top: 20px;
+  }
+  .dir-points h3 {
+    font-family: var(--head); font-size: 14px;
+    text-transform: uppercase; letter-spacing: 3px;
+    color: var(--accent); margin: 14px 0 6px;
+  }
+  .dir-points ul { margin: 0; padding-left: 18px; font-size: 13px; }
+  .dir-points li { margin: 4px 0; color: var(--text); }
+  .dir-points li.muted { color: var(--muted); }
+
+  /* legend */
+  .legend {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    margin: 48px 0 16px;
+  }
+  .legend .cell {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px;
+  }
+  .legend h4 { margin: 0 0 8px; font-family: var(--mono); font-size: 11px;
+    color: var(--accent); letter-spacing: 3px; text-transform: uppercase; }
+  .legend p { margin: 0; font-size: 13px; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="hero">
+    <div class="eyebrow">Lois  ·  UX  Explorations  ·  May 2026</div>
+    <h1 class="h">Four directions for what Lois could feel like.</h1>
+    <p class="sub">
+      The current app is a freeform draggable canvas — maximum flexibility, minimum opinion.
+      These are four alternative directions, each emphasizing a different facet of the
+      Chief-of-Staff mission. They are mutually exclusive at their extremes; the strongest
+      product is probably a hybrid. Read this alongside
+      <a href="UX-EXPLORATIONS.md">docs/UX-EXPLORATIONS.md</a> for the thought process.
+    </p>
+    <p class="meta">
+      Open this file directly in a browser (double-click), or run
+      <code class="mono">npx serve docs</code> in the repo root and visit
+      <code class="mono">http://localhost:3000/ux-mockups.html</code>.
+    </p>
+  </header>
+
+  <div class="grid">
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- DIRECTION A — Briefing-First                                 -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section class="dir">
+      <div class="tag">A · Briefing-First</div>
+      <h2>The COS leads. One card at a time.</h2>
+      <div class="thesis">
+        A real Chief of Staff doesn't make you choose what to look at.
+        They brief you — one thing at a time. You acknowledge and advance.
+      </div>
+
+      <div class="mock">
+        <div class="mock-bar">
+          <span><span class="dot"></span>Lois  ·  Fri 7:14am</span>
+          <span>3 of 7</span>
+        </div>
+
+        <div class="lead-card">
+          <div class="lead-eyebrow">◌ THE LEAD</div>
+          <div class="lead-title">Bump Anna's middle-school registration?</div>
+          <div class="lead-body">
+            Closes Friday — the only hard deadline this week. It's currently below
+            the landscaping quote, which has no deadline. Worth moving it to the top.
+          </div>
+          <div class="act-row">
+            <button class="act primary">Bump it up</button>
+            <button class="act">Leave my order</button>
+            <button class="act">Tell me more</button>
+          </div>
+        </div>
+
+        <div class="pips">
+          <span class="done"></span>
+          <span class="done"></span>
+          <span class="here"></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="peek">↓ peek: Mom is overdue for a check-in (3 weeks)</div>
+      </div>
+
+      <div class="dir-points">
+        <h3>Mission alignment</h3>
+        <ul>
+          <li>Eliminates the "what should I look at" decision</li>
+          <li>Best fit for the <strong>phone roadmap item</strong></li>
+          <li>Every card is a COS judgment call — demonstrates intelligence</li>
+        </ul>
+        <h3>Trade-offs</h3>
+        <ul>
+          <li class="muted">Loses at-a-glance backlog visibility</li>
+          <li class="muted">Hard to cross-reference 3 things at once</li>
+          <li class="muted">Power users will feel constrained</li>
+        </ul>
+        <h3>Hero moment</h3>
+        <ul>
+          <li>7am at the kitchen counter, coffee in one hand</li>
+          <li>The 5-minute mid-morning check-in</li>
+          <li>The school-pickup-line phone glance</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- DIRECTION B — Conversation-Centric                           -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section class="dir">
+      <div class="tag">B · Conversation-Centric</div>
+      <h2>Chat is the spine. Context appears contextually.</h2>
+      <div class="thesis">
+        Talking to a Chief of Staff <em>is</em> the interface. The chat fills
+        most of the screen; the relevant person / loop / calendar slides in as
+        the conversation calls for it. Nothing is "always on."
+      </div>
+
+      <div class="mock">
+        <div class="mock-bar">
+          <span><span class="dot"></span>Chat with COS</span>
+          <span>Quick</span>
+        </div>
+
+        <div class="b-split">
+          <div class="chat-col">
+            <div class="you">"I'm worried about Anna this week"</div>
+            <div class="cos">
+              Anna's been quieter in your interactions log the last 10 days.
+              The middle-school registration is her one hard deadline (Friday).
+              Want me to set a 30-min check-in tonight after homework?
+              <div class="act-row" style="margin-top:10px">
+                <button class="act primary">Yes, find a slot</button>
+                <button class="act">Tomorrow instead</button>
+              </div>
+            </div>
+            <div class="chat-input">type a message…</div>
+          </div>
+
+          <div class="ctx-col">
+            <h4>▸ Context · auto</h4>
+            <div class="ctx-name">Anna · daughter</div>
+            <div class="ctx-cadence">weekly cadence · last touch 2d</div>
+
+            <div class="ctx-section">
+              <div class="ctx-label">Current themes</div>
+              <div class="ctx-item">transition stress</div>
+              <div class="ctx-item">friend group shift</div>
+            </div>
+
+            <div class="ctx-section">
+              <div class="ctx-label">What she needs</div>
+              <div class="ctx-item">dress shoes Monday</div>
+              <div class="ctx-item">check-in this week</div>
+            </div>
+
+            <div class="ctx-section">
+              <div class="ctx-label">Open items</div>
+              <div class="ctx-item">middle-school registration</div>
+              <div class="ctx-item">dentist next month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dir-points">
+        <h3>Mission alignment</h3>
+        <ul>
+          <li>Most "real CoS conversation" feel</li>
+          <li>Best fit for <strong>decide-with-me</strong> and procedural memory</li>
+          <li>Context is automatic — no clicking to find related info</li>
+        </ul>
+        <h3>Trade-offs</h3>
+        <ul>
+          <li class="muted">No at-a-glance state — you have to ask</li>
+          <li class="muted">Marking a loop done becomes a chat exchange</li>
+          <li class="muted">Requires the COS to be smart about what's relevant</li>
+        </ul>
+        <h3>Hero moment</h3>
+        <ul>
+          <li>Deep work moments — "I need to think this through"</li>
+          <li>Decision-making sessions</li>
+          <li>The "wow" demo for investors and first-time users</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- DIRECTION C — Day Strip                                      -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section class="dir">
+      <div class="tag">C · Day Strip</div>
+      <h2>A horizontal timeline of the day. Everything anchored to <em>when</em>.</h2>
+      <div class="thesis">
+        A household runs on time. School at 8, pickup at 3, dinner at 7.
+        Make time the organizing dimension; let calendar, reminders,
+        and COS check-ins live on a single timeline.
+      </div>
+
+      <div class="mock">
+        <div class="top-bar-c">
+          <span>today · Fri May 23</span>
+          <span><span class="pill">✶ decisions: 1</span> &nbsp; <span class="pill warn">◌ overdue: 2</span></span>
+        </div>
+
+        <div class="strip">
+          <div class="strip-rule">
+            <div class="strip-now"></div>
+          </div>
+          <div class="strip-events">
+            <div class="strip-event past">
+              <div class="time">7a</div>
+              <div class="dot"></div>
+              <div class="label">brief</div>
+            </div>
+            <div class="strip-event past">
+              <div class="time">9</div>
+              <div class="dot"></div>
+              <div class="label">peds · Anna</div>
+            </div>
+            <div class="strip-event past">
+              <div class="time">10:30</div>
+              <div class="dot"></div>
+              <div class="label">groceries</div>
+            </div>
+            <div class="strip-event past">
+              <div class="time">11</div>
+              <div class="dot"></div>
+              <div class="label">focus block</div>
+            </div>
+            <div class="strip-event now">
+              <div class="time">12</div>
+              <div class="dot"></div>
+              <div class="label">— now —</div>
+            </div>
+            <div class="strip-event">
+              <div class="time">12:30</div>
+              <div class="dot"></div>
+              <div class="label">lunch w/ team</div>
+            </div>
+            <div class="strip-event">
+              <div class="time">2:45</div>
+              <div class="dot"></div>
+              <div class="label">prep pickup</div>
+            </div>
+            <div class="strip-event">
+              <div class="time">3p</div>
+              <div class="dot"></div>
+              <div class="label">school pickup</div>
+            </div>
+          </div>
+
+          <div class="insert">
+            <div class="insert-text">
+              Mom hasn't been called in 3 weeks.
+              Want to call from the car at 2:45 on the way to pickup?
+            </div>
+            <div class="act-row">
+              <button class="act primary">Yes, 2:45</button>
+              <button class="act">Do it now</button>
+              <button class="act">Tomorrow</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dir-points">
+        <h3>Mission alignment</h3>
+        <ul>
+          <li>Most natural mental model for time-pressed parents</li>
+          <li><strong>Reminders / ticklers find their natural home</strong> (they ARE on a timeline)</li>
+          <li>Visualizes the day — doesn't make you imagine it</li>
+        </ul>
+        <h3>Trade-offs</h3>
+        <ul>
+          <li class="muted">Non-time items (open loops with no due date) feel awkward</li>
+          <li class="muted">Doesn't scale to week / month without re-design</li>
+          <li class="muted">Family-graph visibility is lost</li>
+        </ul>
+        <h3>Hero moment</h3>
+        <ul>
+          <li>The mid-day check-in: "what's now / what's next"</li>
+          <li>Between meetings, after pickup, in transit</li>
+          <li>The COS inserting a tickler on the timeline naturally</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- DIRECTION D — Family Graph                                   -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section class="dir">
+      <div class="tag">D · Family Graph</div>
+      <h2>People are first-class. The household, visible.</h2>
+      <div class="thesis">
+        The OS for a <em>household</em> should put the household at the center.
+        Every person on screen. Every overdue cadence physically visible.
+        Click a person → drill into their world.
+      </div>
+
+      <div class="mock">
+        <div class="top-bar-d">
+          today's brief — <strong>Anna's middle-school registration (Fri)</strong>
+        </div>
+
+        <div class="graph">
+          <div class="person-node n-tl overdue">
+            <div class="pn-name">Mom</div>
+            <div class="pn-status">⚠ overdue 3d</div>
+            <div class="pn-need">check-in call</div>
+          </div>
+          <div class="person-node n-tr current">
+            <div class="pn-name">Spouse</div>
+            <div class="pn-status">● current</div>
+            <div class="pn-need">travel planning</div>
+          </div>
+          <div class="you-node">YOU</div>
+          <div class="person-node n-bl current">
+            <div class="pn-name">Anna</div>
+            <div class="pn-status">● current</div>
+            <div class="pn-need">middle-school reg</div>
+            <div class="pn-need">dress shoes Monday</div>
+          </div>
+          <div class="person-node n-br current">
+            <div class="pn-name">Sam</div>
+            <div class="pn-status">● current</div>
+            <div class="pn-need">summer camp decision</div>
+          </div>
+        </div>
+
+        <div class="bottom-bar-d">
+          <span>+ other loops &amp; decisions ▾</span>
+          <span>💬 chat with COS ▾</span>
+        </div>
+      </div>
+
+      <div class="dir-points">
+        <h3>Mission alignment</h3>
+        <ul>
+          <li><strong>Makes the per-member family graph visible</strong> — the hardest-to-copy moat</li>
+          <li>Cadence + needs are first-class — overdue people physically stand out</li>
+          <li>New users grasp the product is about <em>people</em>, not tasks</li>
+        </ul>
+        <h3>Trade-offs</h3>
+        <ul>
+          <li class="muted">Doesn't naturally fit non-person tasks (house admin, finances)</li>
+          <li class="muted">Risk of feeling like "CRM for family" — wrong emotional register</li>
+          <li class="muted">Empty graph at first run; needs a great onboarding flow</li>
+        </ul>
+        <h3>Hero moment</h3>
+        <ul>
+          <li>Sunday planning — "how is everyone doing?"</li>
+          <li>Multigenerational households, blended families, caregivers</li>
+          <li>Investor demo — visually IS the moat</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="rule"></div>
+
+  <h2 style="font-family: var(--head); font-size: 24px; margin: 32px 0 6px">
+    Recommendation
+  </h2>
+  <p class="sub">If I had to pick one to prototype first…</p>
+
+  <div class="legend">
+    <div class="cell">
+      <h4>Phone story</h4>
+      <p><strong>Direction A (Briefing-First).</strong> Matches the morning-coffee, school-pickup, "phone in one hand" moments. Most aligned with PWA + push roadmap.</p>
+    </div>
+    <div class="cell">
+      <h4>Desktop default</h4>
+      <p><strong>Direction B (Conversation-Centric).</strong> Best first-impression for new desktop users — chat-led with context that earns its place on screen.</p>
+    </div>
+    <div class="cell">
+      <h4>Power-user mode</h4>
+      <p><strong>Current canvas (E).</strong> Keep as an explicit toggle for the small number of users who want drag-and-drop flexibility.</p>
+    </div>
+    <div class="cell">
+      <h4>Future view modes</h4>
+      <p><strong>C (Day Strip)</strong> as a "today view" inside B. <strong>D (Family Graph)</strong> as the right-panel context when the conversation is about people.</p>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <p class="meta" style="margin-top: 32px">
+    See <a href="UX-EXPLORATIONS.md">docs/UX-EXPLORATIONS.md</a> for the full
+    thought process, wireframes in ASCII, and the recommendation matrix.
+  </p>
+
+</div>
+
+</body>
+</html>
